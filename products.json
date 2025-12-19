@@ -1,0 +1,42 @@
+[
+  {
+    "id": "orange",
+    "name": "橘祥如意",
+    "price": "$499",
+    "original_price": "$790",
+    "description": "來自優質小農的精心栽培，每一顆橘子都飽滿多汁，酸甜適中。象徵大吉大利，是過年過節送禮的最佳選擇。富含維他命C，讓您吃得健康又安心。",
+    "image": "images/orange.png",
+    "link": "Google表單網址",
+    "gallery": [
+        "images/orange.png",
+        "images/orange_cut.png"
+    ]
+  },
+  {
+    "id": "loquat",
+    "name": "無與倫枇",
+    "price": "$680",
+    "original_price": "$980",
+    "description": "產地直送的新鮮枇杷，皮薄肉厚，口感細緻綿密。清甜的滋味在口中化開，彷彿春天的氣息。數量稀少，珍貴美味，懂吃的您絕不能錯過。",
+    "image": "images/loquat.png",
+    "link": "LINE@"
+  },
+  {
+    "id": "strawberry",
+    "name": "十全十莓",
+    "price": "$1010",
+    "original_price": "$1500",
+    "description": "季節限定的夢幻逸品！嚴選特級草莓，顆顆鮮紅嬌豔，香氣濃郁。入口即化的酸甜滋味，是戀愛的感覺。適合搭配甜點或直接享用。",
+    "image": "images/strawberry.png",
+    "link": "Google表單網址"
+  },
+  {
+    "id": "grape",
+    "name": "紫氣東來",
+    "price": "$1688",
+    "original_price": "$1980",
+    "description": "頂級巨峰葡萄，果實碩大飽滿，果粉均勻。一口咬下，果汁噴濺，濃郁的葡萄香氣充斥口腔。象徵紫氣東來的好兆頭，送禮自用兩相宜。",
+    "image": "images/grape.png",
+    "link": "Google表單網址"
+  }
+]

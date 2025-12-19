@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品載入中... - BaoFruit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === 沿用你的全域樣式 === */
+        * { box-sizing: border-box; }
+        body { font-family: "Microsoft JhengHei", sans-serif; margin: 0; padding: 0; background-color: #f8f9fa; color: #333; }
+
+        /* header 樣式 */
+        header { background-color: #fff; padding: 15px 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #27ae60; text-decoration: none; }
+
+        /* 商品詳情頁專屬樣式 */
+        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+        
+        .back-link { text-decoration: none; color: #666; font-size: 1rem; display: inline-flex; align-items: center; margin-bottom: 20px; transition: color 0.3s; }
+        .back-link:hover { color: #27ae60; }
+        .back-link i { margin-right: 8px; }
+
+        .product-detail-wrapper { display: flex; flex-direction: column; gap: 40px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        @media (min-width: 768px) {
+            .product-detail-wrapper { flex-direction: row; align-items: start; }
+        }
+
+        
+
+        /* 1. 圖片最外層容器 */
+        .image-container {
+        flex: 1;
+        position: relative; /* 關鍵：設定為定位的基準點 */
+        border-radius: 12px; /* 整個區塊的圓角 */
+        overflow: hidden;   /* 讓主圖和縮圖都不會超出圓角 */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        
+        line-height: 0;
+        }
+
+        /* 主圖樣式 */
+        .main-img {
+        width: 100%;
+        height: auto;
+        object-fit: cover; /* 保持比例填滿 */
+        display: block;
+        transition: opacity 0.3s; /* 換圖時的淡入淡出效果 */
+        }
+
+        /* 2. 縮圖懸浮區塊 (半透明層) */
+        .gallery-overlay {
+        position: flex-column; /* position:absolute 絕對定位，讓它浮起來 */
+        /*bottom: 15px;*/       /* 距離底部 15px */
+        /*left: 15px;*/         /* 距離左側 15px */
+        /*right: 15px;*/
+    
+        background: rgba(255, 255, 255, 0.7); /* 半透明白色背景 */
+        backdrop-filter: blur(8px); /* 毛玻璃模糊效果 (這很吃效能，舊手機可能沒效果) */
+        padding: 8px;
+        border-radius: 10px;
+        z-index: 10; /* 確保在最上層 */
+    
+        width: fit-content; 
+        max-width: 100%;
+        }
+
+        /* 縮圖列表排列 */
+        .thumbnail-list {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto; /* 如果縮圖太多，允許橫向捲動 */
+        scrollbar-width: none; /* 隱藏捲軸 (Firefox) */
+        }
+        .thumbnail-list::-webkit-scrollbar { display: none; /* 隱藏捲軸 (Chrome/Safari) */ }
+
+
+        /* 3. 單張縮圖樣式 */
+        .thumb-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent; /* 預設透明邊框，避免寬度跳動 */
+        transition: all 0.2s;
+        background-color: #ddd;
+        }
+
+        /* 滑鼠移上去的效果 */
+        .thumb-img:hover {
+        transform: scale(1.05);
+        }
+
+        /* 被選中的那張圖 (綠色邊框) */
+        .thumb-img.active {
+        border-color: #27ae60;
+        }
+        .detail-image img { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .detail-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        
+        .detail-title { font-size: 2rem; margin: 0 0 15px 0; color: #2c3e50; }
+        
+        .detail-price-box { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .d-price { font-size: 2rem; color: #e74c3c; font-weight: bold; margin-right: 15px; }
+        .d-original { font-size: 1.2rem; color: #999; text-decoration: line-through; }
+
+        .detail-desc { line-height: 1.8; color: #555; margin-bottom: 30px; font-size: 1.05rem; }
+
+        .buy-action-btn {
+            background-color: #27ae60; color: white; border: none; padding: 18px 40px; 
+            font-size: 1.2rem; border-radius: 50px; cursor: pointer; text-decoration: none; 
+            text-align: center; display: inline-block; transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+        }
+        .buy-action-btn:hover { background-color: #219150; transform: translateY(-2px); }
+        
+        /* 頁尾 */
+        .footer { background-color: #333; color: white; text-align: center; padding: 40px 20px; margin-top: 50px; }
+        .copyright { font-size: 0.8rem; color: #aaa; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo">BaoFruit</a>
+        <div style="font-weight: bold; color: #555;">📞 客服: 09xx-xxx-xxx</div>
+    </header>
+
+    <div class="container">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> 回到商品列表</a>
+        
+        <div class="product-detail-wrapper" id="product-container">
+            <div class="image-container">
+    
+            <img id="p-img" src="" alt="商品圖片" class="main-img">
+    
+            <div class="gallery-overlay">
+                <div class="thumbnail-list" id="p-gallery"></div>
+            </div>
+
+        </div>
+            <div class="detail-info">
+                <h1 class="detail-title" id="p-name">資料讀取中...</h1>
+                <div class="detail-price-box">
+                    <span class="d-price" id="p-price"></span>
+                    <span class="d-original" id="p-original"></span>
+                </div>
+                <p class="detail-desc" id="p-desc"></p>
+                <a href="#" target="_blank" class="buy-action-btn" id="p-link">
+                    前往填單購買 <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p class="copyright">© 2025 BaoFruit. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // 1. 抓取網址上的 ID (例如 product.html?id=orange)
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        // 2. 讀取 products.json
+        fetch('products.json')
+            .then(response => response.json())
+            .then(products => {
+                const product = products.find(p => p.id === productId);
+
+                if (product) {
+                    // 1. 填寫基本資料
+                    document.title = product.name + " - BaoFruit";
+                    document.getElementById('p-name').innerText = product.name;
+                    document.getElementById('p-price').innerText = product.price;
+                    document.getElementById('p-original').innerText = product.original_price;
+                    document.getElementById('p-desc').innerText = product.description;
+                    document.getElementById('p-link').href = product.link;
+                    
+                    // 2. 處理主圖 (預設顯示第一張)
+                    const mainImg = document.getElementById('p-img');
+                    // 如果有 gallery 就用 gallery 第一張，不然就用舊的 image 欄位
+                    mainImg.src = product.gallery ? product.gallery[0] : product.image;
+
+                    // 3. 處理縮圖 (Gallery)
+                    const galleryBox = document.getElementById('p-gallery');
+                    galleryBox.innerHTML = ''; // 先清空，避免重複
+
+                    if (product.gallery && product.gallery.length > 0) {
+                        product.gallery.forEach((imgUrl, index) => {
+                            // 建立一個 img 標籤
+                            const thumb = document.createElement('img');
+                            thumb.src = imgUrl;
+                            thumb.className = 'thumb-img';
+                            
+                            // 點擊縮圖的動作
+                            thumb.onclick = function() {
+                                mainImg.src = imgUrl; // 換大圖
+                                
+                                // 視覺效果：把所有縮圖的綠框拿掉，只加在這個被點的上面
+                                document.querySelectorAll('.thumb-img').forEach(el => el.classList.remove('active'));
+                                this.classList.add('active');
+                            };
+
+                            // 如果是第一張，預設加上綠框
+                            if (index === 0) thumb.classList.add('active');
+
+                            // 把縮圖塞進格子裡
+                            galleryBox.appendChild(thumb);
+                        });
+                    }
+                } else {
+                    document.getElementById('product-container').innerHTML = "<h2>找不到此商品，請返回首頁。</h2>";
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    </script>
+</body>
+</html>
